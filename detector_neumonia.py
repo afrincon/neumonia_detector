@@ -108,6 +108,7 @@ def preprocess(array):
 
 
 class App:
+    ''''''
     def __init__(self):
         self.root = Tk()
         self.root.title("Herramienta para la detección rápida de neumonía")
@@ -250,10 +251,10 @@ class App:
             showinfo(title="Borrar", message="Los datos se borraron con éxito")
 
 
-def main():
-    my_app = App()
-    return 0
+#def main():
+#    my_app = App()
+#    return 0
 
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()
