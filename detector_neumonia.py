@@ -3,6 +3,7 @@
 
 from tkinter import *
 from tkinter import ttk, font, filedialog, Entry
+
 from tkinter.messagebox import askokcancel, showinfo, WARNING
 import getpass
 from PIL import ImageTk, Image
@@ -12,18 +13,9 @@ import tkcap
 import img2pdf
 import numpy as np
 import time
-from tensorflow.keras import backend as K
-import tensorflow as tf
-import pydicom as dicom
-
 tf.compat.v1.disable_eager_execution()
 tf.compat.v1.experimental.output_all_intermediates(True)
 import cv2
-
-
-def model_fun():
-    model_cnn = tf.keras.models.load_model("WilhemNet_86.h5")
-    return model_cnn
 
 
 def grad_cam(array):
