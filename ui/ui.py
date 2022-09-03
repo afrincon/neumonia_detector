@@ -1,11 +1,18 @@
-from tkinter import StringVar, Text, Tk, font, ttk
+from tkinter import END, StringVar, Text, Tk, filedialog, font, ttk
+from tkinter.messagebox import WARNING, askokcancel, showinfo
+from PIL import Image, ImageTk
+import tkcap
+import csv
 
 import backend.backend as backend
+
+import cv2
+import numpy as np
 
 class App:
     '''
     UI definition 
-    '''
+    '''   
 
     def __init__(self):
         self.root = Tk()
@@ -49,15 +56,15 @@ class App:
 
          #   BUTTONS
         self.button1 = ttk.Button(
-            self.root, text="Predecir", state="disabled", command=self.test_button
+            self.root, text="Predecir", state="disabled", command=self.run_model
         )
         self.button2 = ttk.Button(
-            self.root, text="Cargar Imagen", command=back_methods.load_img_file
+            self.root, text="Cargar Imagen", command=self.load_img_file
         )
-        self.button3 = ttk.Button(self.root, text="Borrar", command=self.test_button)
-        self.button4 = ttk.Button(self.root, text="PDF", command=self.test_button)
+        self.button3 = ttk.Button(self.root, text="Borrar", command=self.delete)
+        self.button4 = ttk.Button(self.root, text="PDF", command=self.create_pdf)
         self.button6 = ttk.Button(
-            self.root, text="Guardar", command=self.test_button
+            self.root, text="Guardar", command=self.save_results_csv
         )
 
         #   WIDGETS POSITIONS
@@ -90,6 +97,71 @@ class App:
         #   RUN LOOP
         self.root.mainloop()
 
+    def load_img_file(self):
+        ''' method for load images '''
+        file_path = filedialog.askopenfilename(
+            initialdir="/",
+            title="Select image",
+            filetypes=(
+                ("JPEG", "*.jpeg"),
+                ("DICOM", "*.dcm"),
+                ("jpg files", "*.jpg"),
+                ("png files", "*.png"),
+            ),
+        )
+
+        back_methods = backend.Backend()
+
+        if file_path:            
+            if file_path.endswith('jpeg'):                
+                self.array, img2show =  back_methods.read_jpg_file(file_path)            
+            self.img1 = img2show.resize((250, 250), Image.ANTIALIAS)
+            self.img1 = ImageTk.PhotoImage(self.img1)
+            self.text_img1.image_create(END, image=self.img1)
+            print(type(self.text_img1))
+            self.button1["state"] = "enabled"  
+
+    def run_model(self):
+        back_methods = backend.Backend()
+        self.label, self.proba, self.heatmap = back_methods.predict(self.array)
+        self.img2 = Image.fromarray(self.heatmap)
+        self.img2 = self.img2.resize((250, 250), Image.ANTIALIAS)
+        self.img2 = ImageTk.PhotoImage(self.img2)
+        print("OK")
+        self.text_img2.image_create(END, image=self.img2)
+        self.text2.insert(END, self.label)
+        self.text3.insert(END, "{:.2f}".format(self.proba) + "%")  
+
+    def delete(self):
+        answer = askokcancel(
+            title="Confirmación", message="Se borrarán todos los datos.", icon=WARNING
+        )
+        if answer:
+            self.text1.delete(0, "end")
+            self.text2.delete(1.0, "end")
+            self.text3.delete(1.0, "end")
+            self.text_img1.delete(self.img1, "end")
+            self.text_img2.delete(self.img2, "end")
+            showinfo(title="Borrar", message="Los datos se borraron con éxito")
+
+    def create_pdf(self):
+        cap = tkcap.CAP(self.root)
+        ID = "Reporte" + str(self.reportID) + ".jpg"
+        img = cap.capture(ID)
+        img = Image.open(ID)
+        img = img.convert("RGB")
+        pdf_path = r"Reporte" + str(self.reportID) + ".pdf"
+        img.save(pdf_path)
+        self.reportID += 1
+        showinfo(title="PDF", message="El PDF fue generado con éxito.")
+
+    def save_results_csv(self):
+        with open("historial.csv", "a") as csvfile:
+            w = csv.writer(csvfile, delimiter="-")
+            w.writerow(
+                [self.text1.get(), self.label, "{:.2f}".format(self.proba) + "%"]
+            )
+            showinfo(title="Guardar", message="Los datos se guardaron con éxito.")
 
     def test_button(self):
         '''Return hello world test function'''
