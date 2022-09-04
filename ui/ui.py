@@ -1,13 +1,13 @@
+"""
+Methods used to build UI.
+"""
 from tkinter import END, StringVar, Text, Tk, filedialog, font, ttk
 from tkinter.messagebox import WARNING, askokcancel, showinfo
+import csv
 from PIL import Image, ImageTk
 import tkcap
-import csv
 
 import backend.backend as backend
-
-import cv2
-import numpy as np
 
 class App:
     '''
@@ -52,9 +52,7 @@ class App:
         self.text2 = Text(self.root)
         self.text3 = Text(self.root)
 
-        back_methods = backend.Backend()
-
-         #   BUTTONS
+        #   BUTTONS
         self.button1 = ttk.Button(
             self.root, text="Predecir", state="disabled", command=self.run_model
         )
@@ -112,16 +110,18 @@ class App:
 
         back_methods = backend.Backend()
 
-        if file_path:            
+        if file_path:
             if file_path.endswith('jpeg'):                
-                self.array, img2show =  back_methods.read_jpg_file(file_path)            
+                self.array, img2show =  back_methods.read_jpg_file(file_path)
+            elif file_path.endswith('dcm'):
+                self.array, img2show = back_methods.read_dicom_file(file_path)
             self.img1 = img2show.resize((250, 250), Image.ANTIALIAS)
             self.img1 = ImageTk.PhotoImage(self.img1)
             self.text_img1.image_create(END, image=self.img1)
-            print(type(self.text_img1))
-            self.button1["state"] = "enabled"  
+            self.button1["state"] = "enabled"
 
     def run_model(self):
+        ''' method to invoke predictions'''
         back_methods = backend.Backend()
         self.label, self.proba, self.heatmap = back_methods.predict(self.array)
         self.img2 = Image.fromarray(self.heatmap)
@@ -133,6 +133,7 @@ class App:
         self.text3.insert(END, "{:.2f}".format(self.proba) + "%")  
 
     def delete(self):
+        ''' Delete information from UI'''
         answer = askokcancel(
             title="Confirmación", message="Se borrarán todos los datos.", icon=WARNING
         )
@@ -156,7 +157,8 @@ class App:
         showinfo(title="PDF", message="El PDF fue generado con éxito.")
 
     def save_results_csv(self):
-        with open("historial.csv", "a") as csvfile:
+        ''' Method to save information to a file'''
+        with open('historial.csv', "a", encoding="utf-8") as csvfile:
             w = csv.writer(csvfile, delimiter="-")
             w.writerow(
                 [self.text1.get(), self.label, "{:.2f}".format(self.proba) + "%"]
