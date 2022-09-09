@@ -1,7 +1,11 @@
+"""
+Methods used to build Backend.
+"""
+
 from tkinter import filedialog
 from tkinter.messagebox import showinfo
-from PIL import ImageTk, Image
 from tkinter import END
+from PIL import ImageTk, Image
 import tensorflow as tf
 from tensorflow.keras import backend as K
 
@@ -44,6 +48,9 @@ class Backend:
         return model_cnn
 
     def predict(self, array):
+        '''
+        funtion to receive array and return label, headmap and probability
+        '''
         #   1. call function to pre-process image: it returns image in batch format
         batch_array_img = self.preprocess(array)
         #   2. call function to load model and predict: it returns predicted class and probability

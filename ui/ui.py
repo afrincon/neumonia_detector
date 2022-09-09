@@ -6,6 +6,10 @@ from tkinter.messagebox import WARNING, askokcancel, showinfo
 import csv
 from PIL import Image, ImageTk
 import tkcap
+from tkinter.filedialog import askopenfile
+
+import os
+from os.path import exists
 
 import backend.backend as backend
 
@@ -59,11 +63,17 @@ class App:
         self.button2 = ttk.Button(
             self.root, text="Cargar Imagen", command=self.load_img_file
         )
+        self.button2.pack()
         self.button3 = ttk.Button(self.root, text="Borrar", command=self.delete)
         self.button4 = ttk.Button(self.root, text="PDF", command=self.create_pdf)
         self.button6 = ttk.Button(
             self.root, text="Guardar", command=self.save_results_csv
         )
+
+        model_path = 'backend/WilhemNet_86.h5'
+
+        if not exists(model_path):
+            showinfo(title="Modelo no encontrado", message="Para esta version de la apicacion se debe de colocar en modelo en la carpeta 'backend' con el nombre de WilhemNet_86.h5.")
 
         #   WIDGETS POSITIONS
         self.lab1.place(x=110, y=65)
@@ -72,11 +82,11 @@ class App:
         self.lab4.place(x=65, y=350)
         self.lab5.place(x=122, y=25)
         self.lab6.place(x=500, y=400)
-        self.button1.place(x=220, y=460)
+        self.button1.place(x=190, y=460)
         self.button2.place(x=70, y=460)
-        self.button3.place(x=670, y=460)
-        self.button4.place(x=520, y=460)
-        self.button6.place(x=370, y=460)
+        self.button3.place(x=520, y=460)
+        self.button4.place(x=410, y=460)
+        self.button6.place(x=300, y=460)
         self.text1.place(x=200, y=350)
         self.text2.place(x=610, y=350, width=90, height=30)
         self.text3.place(x=610, y=400, width=90, height=30)
@@ -94,7 +104,7 @@ class App:
 
         #   RUN LOOP
         self.root.mainloop()
-
+    
     def load_img_file(self):
         ''' method for load images '''
         file_path = filedialog.askopenfilename(
@@ -115,6 +125,7 @@ class App:
                 self.array, img2show =  back_methods.read_jpg_file(file_path)
             elif file_path.endswith('dcm'):
                 self.array, img2show = back_methods.read_dicom_file(file_path)
+
             self.img1 = img2show.resize((250, 250), Image.ANTIALIAS)
             self.img1 = ImageTk.PhotoImage(self.img1)
             self.text_img1.image_create(END, image=self.img1)
@@ -130,7 +141,7 @@ class App:
         print("OK")
         self.text_img2.image_create(END, image=self.img2)
         self.text2.insert(END, self.label)
-        self.text3.insert(END, "{:.2f}".format(self.proba) + "%")  
+        self.text3.insert(END, "{:.2f}".format(self.proba) + "%")
 
     def delete(self):
         ''' Delete information from UI'''

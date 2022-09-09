@@ -10,3 +10,5 @@ tensorflow
 python-xlib
 pep8
 pylint
+pytest
+coverage
