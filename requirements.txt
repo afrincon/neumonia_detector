@@ -6,7 +6,7 @@ img2pdf
 opencv_python
 matplotlib
 pandas
-tensorflow
+tensorflow==2.9.1
 python-xlib
 pep8
 pylint

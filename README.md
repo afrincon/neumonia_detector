@@ -19,23 +19,16 @@ A continuación le explicaremos cómo empezar a utilizarla.
 
 Requerimientos necesarios para el funcionamiento:
 
-- Instale Anaconda para Windows siguiendo las siguientes instrucciones:
-	 https://docs.anaconda.com/anaconda/install/windows/
+- Docker
 
-- Abra Anaconda Prompt y ejecute las siguientes instrucciones:
-	
-	conda create -n tf tensorflow	
-	
-	conda activate tf	
-	
-	git clone https://isabella83tr@bitbucket.org/isabella83tr/codes.git
-	
-	cd codes
+Despues de tener instalado docker se debe de realizar lo siguiente: 
 
-	pip install -r requirements.txt
+Para Linux:
 
-	python detector_neumonia.py
-	
+1. dar permisos desde el bash ejecutando xhost +local:*
+2. Ejecutar el contenedor con el comando: docker run --rm -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ neumonia
+
+
 Uso de la Interfaz Gráfica:
 
 - Ingrese la cédula del paciente en la caja de texto

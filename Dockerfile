@@ -1,4 +1,4 @@
-FROM python
+FROM python:3.8-slim-buster
 
 #Deault workdir
 WORKDIR /app
@@ -19,6 +19,8 @@ RUN pip3 install --upgrade pip
 
 # Install requirements
 RUN pip3 install -r requirements.txt
+
+ADD https://github.com/afrincon/neumonia_detector/releases/download/model/WilhemNet_86.h5 /app/backend/
 
 # Commands to run Tkinter application
 CMD ["./main_app.py"]
