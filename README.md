@@ -15,25 +15,22 @@ Aplicación de una técnica de explicación llamada Grad-CAM para resaltar con u
 
 A continuación le explicaremos cómo empezar a utilizarla.
 
+*Importante* para la ejecucion de la aplicacion en escritorio se debe de colocar el modelo en la carpeta del modulo backend con el nombre WilhemNet_86.h5, la aplicacion mostrara la advertencia en caso de no encontrarse, para la ejecucion en docker el modelo ya viene precargado
+
 Requerimientos necesarios para el funcionamiento:
 
-- Instale Anaconda para Windows siguiendo las siguientes instrucciones:
-	 https://docs.anaconda.com/anaconda/install/windows/
+- Docker
 
-- Abra Anaconda Prompt y ejecute las siguientes instrucciones:
-	
-	conda create -n tf tensorflow	
-	
-	conda activate tf	
-	
-	git clone https://isabella83tr@bitbucket.org/isabella83tr/codes.git
-	
-	cd codes
+Despues de tener instalado docker se debe de realizar lo siguiente: 
 
-	pip install -r requirements.txt
+*Importante se debe montar un volumen para subir las imagenes a la aplicacion*
 
-	python detector_neumonia.py
-	
+Para Linux:
+
+1. dar permisos desde el bash ejecutando xhost +local:*
+2. Ejecutar el contenedor con el comando: docker run --rm -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ neumonia
+
+
 Uso de la Interfaz Gráfica:
 
 - Ingrese la cédula del paciente en la caja de texto
@@ -47,39 +44,25 @@ Uso de la Interfaz Gráfica:
 
 ## Explicación de los scripts
 
-## detector_neumonia.py
+## main_app.py
+
+contiene el script de entrada a la aplicacion
+
+## ui.py
 
 Contiene el diseño de la interfaz gráfica utilizando Tkinter.
 
 Los botones llaman métodos contenidos en otros scripts.
 
-## integrator.py
+## backend.py
 
 Es un módulo que integra los demás scripts y retorna solamente lo necesario para ser visualizado en la interfaz gráfica.
 Retorna la clase, la probabilidad y una imagen el mapa de calor generado por Grad-CAM.
 
-## read_img.py
-
-Script que lee la imagen en formato DICOM para visualizarla en la interfaz gráfica. Además, la convierte a arreglo para su preprocesamiento.
-
-## preprocess_img.py
-
-Script que recibe el arreglo proveniento de read_img.py, realiza las siguientes modificaciones:
-- resize a 512x512
-- conversión a escala de grises
-- ecualización del histograma con CLAHE
-- normalización de la imagen entre 0 y 1
-- conversión del arreglo de imagen a formato de batch (tensor)
-
-## load_model.py
-
 Script que lee el archivo binario del modelo de red neuronal convolucional previamente entrenado llamado 'WilhemNet86.h5'.
 
-## grad_cam.py
-
-Script que recibe la imagen y la procesa, carga el modelo, obtiene la predicción y la capa convolucional de interés para obtener las características relevantes de la imagen.
-
 ---
+
 ## Acerca del Modelo
 
 La red neuronal convolucional implementada (CNN) es basada en el modelo implementado por F. Pasa, V.Golkov, F. Pfeifer, D. Cremers & D. Pfeifer
@@ -99,5 +82,5 @@ Es una técnica utilizada para resaltar las regiones de una imagen que son impor
 Grad-CAM realiza el cálculo del gradiente de la salida correspondiente a la clase a visualizar con respecto a las neuronas de una cierta capa de la CNN. Esto permite tener información de la importancia de cada neurona en el proceso de decisión de esa clase en particular. Una vez obtenidos estos pesos, se realiza una combinación lineal entre el mapa de activaciones de la capa y los pesos, de esta manera, se captura la importancia del mapa de activaciones para la clase en particular y se ve reflejado en la imagen de entrada como un mapa de calor con intensidades más altas en aquellas regiones relevantes para la red con las que clasificó la imagen en cierta categoría.
 
 ## Realizado por:
-Isabella Torres Revelo - https://github.com/isa-tr
-Nicolas Diaz Salazar - https://github.com/nicolasdiazsalazar
+Andres Julian Jimenez - https://github.com/behindafact
+Andres Felipe Rincon - https://github.com/afrincon
