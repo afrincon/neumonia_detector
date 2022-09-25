@@ -23,6 +23,8 @@ Requerimientos necesarios para el funcionamiento:
 
 Despues de tener instalado docker se debe de realizar lo siguiente: 
 
+*Importante se debe montar un volumen para subir las imagenes a la aplicacion*
+
 Para Linux:
 
 1. dar permisos desde el bash ejecutando xhost +local:*
