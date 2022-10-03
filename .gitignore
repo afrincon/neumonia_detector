@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 
 *.h5
+
+# exclude old files
+/app.old
