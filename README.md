@@ -26,4 +26,5 @@ Arturo Duque Marin [repo GRPC_example](https://github.com/woodElec/grpc_example)
 
 # Realizado por
 Andres Julian Jimenez [GitHub afrincon](https://github.com/afrincon)
+
 Andres Felipe Rincon [GitHub behindafact](https://github.com/behindafact)

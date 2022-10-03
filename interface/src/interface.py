@@ -2,6 +2,8 @@
 from tkinter import Tk, Button, Label, filedialog, BOTTOM
 import tkinter as ttk
 import base64
+from tkinter.messagebox import WARNING, askokcancel
+from turtle import clear
 
 import grpc
 from PIL import Image
@@ -86,12 +88,13 @@ def make_prediction():
     else:
             # update the pannels
         panelA.configure(text=result_prediction)
-        panelA.image = result_prediction    
+        #panelA.image = result_prediction
 
 
 # initialize the window toolkit along with the two image panels
 root = Tk()
-
+root.title("Herramienta para la detección rápida de neumonía")
+root.resizable(0, 0)
 frm = ttk.Frame(root, padx=10, pady=10)
 frm.grid()
 
