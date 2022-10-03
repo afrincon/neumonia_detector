@@ -6,20 +6,22 @@ services:
     image: backend:1.0.0
     build:
       context: ./
-      dockerfile: app/backend/Dockerfile
+      dockerfile: backend/Dockerfile
     volumes:
-      - /Users/felipe/Downloads:/app/images
-    command: [python, backend.py]
+      - /home/felipe/Downloads:/app/images
+    entrypoint: /usr/local/bin/python
+    command: [backend.py]
 
   ui:
     container_name: interface
     image: interface:1.0.0
     build:
       context: ./
-      dockerfile: app/ui/Dockerfile
+      dockerfile: interface/Dockerfile
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - /Users/felipe/Downloads:/app/images
+      - /home/felipe/Downloads:/app/images
     environment:
-      - DISPLAY=192.168.1.3:0
-    command: [python, uy.py]
+      - DISPLAY=${DISPLAY}
+    entrypoint: /usr/local/bin/python
+    command: [interface.py]
