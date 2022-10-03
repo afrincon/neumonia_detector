@@ -1,0 +1,6 @@
+pillow
+pyautogui
+python-xlib
+opencv_python
+grpcio
+grpcio-tools
