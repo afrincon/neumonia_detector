@@ -1,7 +1,8 @@
 # import the necessary packages
-from tkinter import Tk, Button, Label, filedialog, BOTTOM
+from tkinter import DISABLED, NORMAL, Tk, Button, Label, filedialog, BOTTOM
 import tkinter as ttk
 import base64
+from tkinter import messagebox
 from tkinter.messagebox import WARNING, askokcancel
 from turtle import clear
 
@@ -15,7 +16,7 @@ import backend_pb2_grpc
 
 def select_image():
     # grab a reference to the image panels
-    global panelA, backend_client
+    global panelA, backend_client, img_content, img_w, img_h
     # open a file chooser dialog and allow the user to select an input
     # image
     path = filedialog.askopenfilename(title="Select image",
@@ -48,7 +49,7 @@ def select_image():
         if panelA is None:
             # the first panel will store our original image
             panelA = Label(image=image).grid(column=0, row=2, columnspan=4, pady=10)
-            panelA.image = image            
+            panelA.image = image
         else:
             # update the pannels
             panelA.configure(image=image)
@@ -58,37 +59,24 @@ def make_prediction():
     # grab a reference to the image panels
     global panelA, backend_client
 
-    # open a file chooser dialog and allow the user to select an input
-    # image
-    path = filedialog.askopenfilename(title="Select image",
-            filetypes=(
-                ("JPEG", "*.jpeg"),
-                ("DICOM", "*.dcm"),
-                ("jpg files", "*.jpg"),
-                ("png files", "*.png"),
-            ))
+    try:
 
-    # ensure a file path was selected
-    if len(path) > 0:
-
-        path_message = backend_pb2.img_path(path=path)
-        response = backend_client.load_image(path_message)
-
-        img_content = response.img_content
-        img_w = response.width
-        img_h = response.height
+        image_data = backend_pb2.image_data(b64image=img_content, width=img_w, height=img_h)
+        data = backend_client.predict_data(image_data)
     
-    image_data = backend_pb2.image_data(b64image=img_content, width=img_w, height=img_h)
-    data = backend_client.predict_data(image_data)
-    
-    result_prediction = "Resultado de la evaluación de la imagen\n Presenta un tipo de neumonia {}, \n con una probabilidad de {:.2f}%".format(data.label, data.prediction)
+        result_prediction = "Resultado de la evaluación de la imagen\n Presenta un tipo de neumonia {}, \n con una probabilidad de {:.2f}%".format(data.label, data.prediction)
 
-    if panelA is None:
-        panelA = Label(frm, text=result_prediction).grid(column=0, row=2, columnspan=4, pady=10)        
-    else:
+        if panelA is None:
+            panelA = Label(frm, text=result_prediction).grid(column=0, row=2, columnspan=4, pady=10)        
+        else:
             # update the pannels
-        panelA.configure(text=result_prediction)
-        #panelA.image = result_prediction
+            panelA.configure(text=result_prediction)
+            #panelA.image = result_prediction
+
+    except Exception as e:
+        messagebox.showerror('Error en el app', 'Debe cargar una imagen para poder realizar una predicción')
+
+    
 
 
 # initialize the window toolkit along with the two image panels
