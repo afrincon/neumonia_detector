@@ -14,6 +14,8 @@ Despues de tener instalado docker se debe de realizar lo siguiente:
 Para Linux:
 
 1. Dar permisos desde el bash ejecutando xhost +local:*
+2. Cambiar el directorio de origen para el volumen en las lineas 11 y 23 de docker-compose.yml
+2. ejecutar con docker compose up
 
 Para Windows:
 
